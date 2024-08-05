@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Search Bar with Products</title>
+  <style>
+    .search-container {
+      display: flex;
+      flex-direction: column; 
+      align-items: center; 
+      margin-top: 50px;
+      position: relative; 
+      width: 100%; 
+    }
+    .search-input {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .search-button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px; 
+    }
+    .suggestions {
+      position: absolute;
+      top: 100%; 
+      left: 50%;
+      transform: translateX(-50%); 
+      width: 300px; 
+      background: white;
+      border: 1px solid #ddd;
+      border-top: none;
+      max-height: 150px;
+      overflow-y: auto;
+      z-index: 1;
+      display: none; 
+    }
+    .suggestion-item {
+      padding: 10px;
+      cursor: pointer;
+    }
+    .suggestion-item:hover {
+      background-color: skyblue;
+      color: white;
+    }
+    .product-list {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .product-item {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 5px 0;
+      display: inline-block;
+      width: 300px;
+      text-align: left;
+    }
+    .product-item img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="search-container">
+    <input type="text" id="search-input" class="search-input" placeholder="Search..." oninput="showSuggestions()" onfocus="toggleSuggestions(true)" onblur="toggleSuggestions(false)">
+    <div id="suggestions" class="suggestions"></div>
+    <button onclick="search()" class="search-button">Search</button>
+  </div>
+
+  <div id="search-results" class="product-list"></div>
+
+  <script>
+    // Sample product data with image URLs
+    const products = [
+      { name: 'Apple iPhone 13', description: 'Latest model with A15 Bionic chip', image: 'https://via.placeholder.com/150?text=iPhone+13' },
+      { name: 'Apple iPhone 16', description: 'Latest model with A15 Bionic chip', image: 'https://via.placeholder.com/150?text=iPhone+16' },
+      { name: 'Samsung Galaxy S21', description: 'Flagship phone with great features', image: 'https://via.placeholder.com/150?text=Galaxy+S21' },
+      { name: 'Sony WH-1000XM4', description: 'Noise-cancelling headphones', image: 'https://via.placeholder.com/150?text=Sony+WH-1000XM4' },
+      { name: 'MacBook Pro', description: 'Powerful laptop with M1 chip', image: 'https://via.placeholder.com/150?text=MacBook+Pro' },
+      { name: 'Dell XPS 13', description: 'Compact and powerful laptop', image: 'https://via.placeholder.com/150?text=Dell+XPS+13' },
+      { name: 'Chaitanya', description: 'Special product description', image: './Naidu Designs (16).jpg' }, // Relative path to the image
+      { name: 'Drive Image Product', description: 'Product with image from Google Drive', image: 'https://drive.google.com/uc?id=1dTVzo8csf9doEYixARvSphEnI9qYSJzi' }, // Image from Google Drive
+      { name: 'PHP By Phani', description: 'Its a Scripting Language', image: 'https://via.placeholder.com/150?text=PHP' }
+    ];
+
+    function search() {
+      
+      const query = document.getElementById('search-input').value.toLowerCase();
+
+      
+      const filteredProducts = products.filter(product => 
+        product.name.toLowerCase().includes(query) || 
+        product.description.toLowerCase().includes(query)
+      );
+
+  
+      const resultsContainer = document.getElementById('search-results');
+      resultsContainer.innerHTML = '';
+
+      if (filteredProducts.length > 0) {
+        filteredProducts.forEach(product => {
+          const productItem = document.createElement('div');
+          productItem.className = 'product-item';
+          productItem.innerHTML = `
+            <img src="${product.image}" alt="${product.name}">
+            <h3>${product.name}</h3>
+            <p>${product.description}</p>
+          `;
+          resultsContainer.appendChild(productItem);
+        });
+      } else {
+        resultsContainer.innerHTML = '<p>No products found.</p>';
+      }
+    }
+
+    function showSuggestions() {
+      
+      const query = document.getElementById('search-input').value.toLowerCase();
+      
+  
+      const suggestions = products.filter(product =>
+        product.name.toLowerCase().includes(query) ||
+        product.description.toLowerCase().includes(query)
+      );
+
+      
+      const suggestionsContainer = document.getElementById('suggestions');
+      suggestionsContainer.innerHTML = '';
+
+      if (suggestions.length > 0 && query !== '') {
+        suggestions.forEach(product => {
+          const suggestionItem = document.createElement('div');
+          suggestionItem.className = 'suggestion-item';
+          suggestionItem.innerHTML = product.name; 
+
+          
+          suggestionItem.onmouseover = function() {
+            document.getElementById('search-input').value = product.name;
+          };
+
+          
+          suggestionItem.onclick = function() {
+            
+            const resultsContainer = document.getElementById('search-results');
+            resultsContainer.innerHTML = `
+              <div class="product-item">
+                <img src="${product.image}" alt="${product.name}">
+                <h3>${product.name}</h3>
+                <p>${product.description}</p>
+              </div>
+            `;
+
+            
+            suggestionsContainer.innerHTML = '';
+          };
+
+          suggestionsContainer.appendChild(suggestionItem);
+        });
+      }
+    }
+
+    function toggleSuggestions(show) {
+      const suggestionsContainer = document.getElementById('suggestions');
+      if (show) {
+        suggestionsContainer.style.display = 'block';
+      } else {
+        setTimeout(() => { 
+          suggestionsContainer.style.display = 'none';
+        }, 100);
+      }
+    }
+  </script>
+
+</body>
+</html>

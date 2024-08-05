@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html>
+    <head>
+
+    <style>
+        .box{
+          display:flex;
+          flex-direction:row;
+          justify-content:space-between;
+        }
+        .flex{
+          display:flex;
+          flex-direction:column;
+          height:350px;
+          width:270px;
+          background-color:white
+          margin-left:10px;
+        }
+        .image{
+          height:250px;
+          width:270px;
+          object-fit: contain;
+        }
+
+    
+        .search-container {
+      display: flex;
+      flex-direction: column; 
+      align-items: center; 
+      margin-top: 50px;
+      position: relative; 
+      width: 100%; 
+    }
+    .search-input {
+      width: 300px;
+      padding: 10px;
+      font-size: 16px;
+    }
+    .search-button {
+      padding: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 10px; 
+    }
+    .suggestions {
+      position: absolute;
+      top: 100%; 
+      left: 50%;
+      transform: translateX(-50%); 
+      width: 300px; 
+      background: white;
+      border: 1px solid #ddd;
+      border-top: none;
+      max-height: 150px;
+      overflow-y: auto;
+      z-index: 1;
+      display: none; 
+    }
+    .suggestion-item {
+      padding: 10px;
+      cursor: pointer;
+    }
+    .suggestion-item:hover {
+      background-color: skyblue;
+      color: white;
+    }
+    .product-list {
+      margin-top: 20px;
+      text-align: center;
+    }
+    .product-item {
+      border: 1px solid #ddd;
+      padding: 10px;
+      margin: 5px 0;
+      display: inline-block;
+      width: 300px;
+      text-align: left;
+    }
+    .product-item img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+        </style>
+
+    </head>
+    <body>
+        
+            <div class="search-container">
+                <input type="text" id="search-input" class="search-input" placeholder="Search..." oninput="showSuggestions()" onfocus="toggleSuggestions(true)" onblur="toggleSuggestions(false)">
+                <div id="suggestions" class="suggestions"></div>
+                <button onclick="search()" class="search-button">Search</button>
+              </div>
+            
+              <div id="search-results" class="product-list"></div>
+
+<div class="box">
+        <div class="flex">
+          <div>
+<img class="image" src="https://baazimagess3.s3-ap-southeast-1.amazonaws.com/bk_images/087/9788121917087.jpg">
+          </div>
+          <div>
+about the book
+          </div>
+        </div>
+        <div class="flex">
+          <div>
+<img class="image" src="https://th.bing.com/th/id/OIP.ywpmOQQN88ZBBQEDVEc9KQHaHa?rs=1&pid=ImgDetMain">
+          </div>
+          <div>
+about the book
+          </div>
+        </div>
+        <div class="flex">
+          <div>
+<img class="image" src="https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9780764143168/essentials-of-english-9780764143168_hr.jpg">
+          </div>
+          <div>
+about the book
+          </div>
+        </div>
+        <div class="flex">
+          <div>
+<img class="image" src="https://th.bing.com/th/id/OIP.zXA2bPwVhVxabK-fP2QXTwHaJl?rs=1&pid=ImgDetMain">
+          </div>
+          <div>
+about the book
+          </div>
+        </div>
+        
+        </div>
+              <script>
+                // Sample product data with image URLs
+                const products = [
+                  { name: 'mathemathics', description: 'fifth sem', image: 'https://baazimagess3.s3-ap-southeast-1.amazonaws.com/bk_images/087/9788121917087.jpg' },
+                  { name: 'statistics', description: 'third sem', image: 'https://th.bing.com/th/id/OIP.ywpmOQQN88ZBBQEDVEc9KQHaHa?rs=1&pid=ImgDetMain' },
+                  { name: 'english', description: 'fourth sem', image: 'https://d28hgpri8am2if.cloudfront.net/book_images/onix/cvr9780764143168/essentials-of-english-9780764143168_hr.jpg' },
+                  { name: 'physics', description: 'second sem', image: 'https://th.bing.com/th/id/OIP.zXA2bPwVhVxabK-fP2QXTwHaJl?rs=1&pid=ImgDetMain' },
+                  { name: 'MacBook Pro', description: 'Powerful laptop with M1 chip', image: 'https://via.placeholder.com/150?text=MacBook+Pro' },
+                  { name: 'Dell XPS 13', description: 'Compact and powerful laptop', image: 'https://via.placeholder.com/150?text=Dell+XPS+13' },
+                  { name: 'Chaitanya', description: 'Special product description', image: './Naidu Designs (16).jpg' }, 
+                  { name: 'Drive Image Product', description: 'Product with image from Google Drive', image: 'https://drive.google.com/file/d/1GRa1F06u-KRSObqiQaW7blQbLDnGsefl/view?usp=drivesdk' }, // Image from Google Drive
+                  { name: 'PHP By Phani', description: 'Its a Scripting Language', image: 'https://via.placeholder.com/150?text=PHP' }
+                ];
+            
+                function search() {
+                  
+                  const query = document.getElementById('search-input').value.toLowerCase();
+            
+                  
+                  const filteredProducts = products.filter(product => 
+                    product.name.toLowerCase().includes(query) || 
+                    product.description.toLowerCase().includes(query)
+                  );
+            
+              
+                  const resultsContainer = document.getElementById('search-results');
+                  resultsContainer.innerHTML = '';
+            
+                  if (filteredProducts.length > 0) {
+                    filteredProducts.forEach(product => {
+                      const productItem = document.createElement('div');
+                      productItem.className = 'product-item';
+                      productItem.innerHTML = `
+                        <img src="${product.image}" alt="${product.name}">
+                        <h3>${product.name}</h3>
+                        <p>${product.description}</p>
+                      `;
+                      resultsContainer.appendChild(productItem);
+                    });
+                  } else {
+                    resultsContainer.innerHTML = '<p>No products found.</p>';
+                  }
+                }
+            
+                function showSuggestions() {
+                  
+                  const query = document.getElementById('search-input').value.toLowerCase();
+                  
+              
+                  const suggestions = products.filter(product =>
+                    product.name.toLowerCase().includes(query) ||
+                    product.description.toLowerCase().includes(query)
+                  );
+            
+                  
+                  const suggestionsContainer = document.getElementById('suggestions');
+                  suggestionsContainer.innerHTML = '';
+            
+                  if (suggestions.length > 0 && query !== '') {
+                    suggestions.forEach(product => {
+                      const suggestionItem = document.createElement('div');
+                      suggestionItem.className = 'suggestion-item';
+                      suggestionItem.innerHTML = product.name; 
+            
+                      
+                      suggestionItem.onmouseover = function() {
+                        document.getElementById('search-input').value = product.name;
+                      };
+            
+                      
+                      suggestionItem.onclick = function() {
+                        
+                        const resultsContainer = document.getElementById('search-results');
+                        resultsContainer.innerHTML = `
+                          <div class="product-item">
+                            <img src="${product.image}" alt="${product.name}">
+                            <h3>${product.name}</h3>
+                            <p>${product.description}</p>
+                          </div>
+                        `;
+            
+                        
+                        suggestionsContainer.innerHTML = '';
+                      };
+            
+                      suggestionsContainer.appendChild(suggestionItem);
+                    });
+                  }
+                }
+            
+                function toggleSuggestions(show) {
+                  const suggestionsContainer = document.getElementById('suggestions');
+                  if (show) {
+                    suggestionsContainer.style.display = 'block';
+                  } else {
+                    setTimeout(() => { 
+                      suggestionsContainer.style.display = 'none';
+                    }, 100);
+                  }
+                }
+              </script>
+            
+            
+            
+    </body>
+</html>
